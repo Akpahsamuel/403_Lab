@@ -3,6 +3,10 @@ import random
 from datetime import datetime
 from spade.agent import Agent
 from spade.behaviour import PeriodicBehaviour
+from colorama import Fore, Style, init
+
+# Initialize colorama
+init(autoreset=True)
 
 # This class simulates the 'Perception' part of the agent
 class MonitorDisaster(PeriodicBehaviour):
@@ -16,15 +20,25 @@ class MonitorDisaster(PeriodicBehaviour):
         timestamp = datetime.now().strftime("%H:%M:%S")
 
         # LOGGING: This satisfies the 'Event Logs' deliverable
-        print(f"[{timestamp}] PERCEPT RECEIVED: Damage Level is {current_percept} ({level})")
+        # Color coding based on severity
+        if level == 0:
+            color = Fore.GREEN
+        elif level == 1:
+            color = Fore.BLUE
+        elif level == 2:
+            color = Fore.YELLOW
+        else:
+            color = Fore.RED
+        
+        print(f"{color}[{timestamp}] PERCEPT RECEIVED: Damage Level is {current_percept} ({level}){Style.RESET_ALL}")
 
         # REACTIVE LOGIC: Simple response to perception
         if level >= 3:
-            print(f"--- [ALERT] High Severity Detected! Initializing Emergency Protocol ---")
+            print(f"{Fore.RED}{Style.BRIGHT}--- [ALERT] High Severity Detected! Initializing Emergency Protocol ---{Style.RESET_ALL}")
 
 class SensorAgent(Agent):
     async def setup(self):
-        print(f"SensorAgent {self.jid} started. Monitoring environment...")
+        print(f"{Fore.CYAN}SensorAgent {self.jid} started. Monitoring environment...{Style.RESET_ALL}")
         # Check the environment every 3 seconds
         self.add_behaviour(MonitorDisaster(period=3))
 
@@ -34,16 +48,16 @@ async def main():
 
     agent = SensorAgent(jid, password)
     
-    print("--- [SYSTEM] Connecting to local server... ---")
+    print(f"{Fore.CYAN}--- [SYSTEM] Connecting to local server... ---{Style.RESET_ALL}")
     
     # REMOVED verify_security to fix the TypeError
     try:
         await agent.start(auto_register=True)
     except Exception as e:
-        print(f"Connection failed: {e}")
+        print(f"{Fore.RED}Connection failed: {e}{Style.RESET_ALL}")
         return
     
-    print("--- [SYSTEM] Monitoring active. Let it run to gather logs... ---")
+    print(f"{Fore.CYAN}--- [SYSTEM] Monitoring active. Let it run to gather logs... ---{Style.RESET_ALL}")
     
     # Run for 20 seconds so you can capture enough logs for your deliverable
     try:
@@ -52,7 +66,7 @@ async def main():
         pass
         
     await agent.stop()
-    print("--- [SYSTEM] Monitoring complete. ---")
+    print(f"{Fore.CYAN}--- [SYSTEM] Monitoring complete. ---{Style.RESET_ALL}")
 
 if __name__ == "__main__":
     try:
