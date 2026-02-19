@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <server>
+        <host>localhost</host>
+        <port>5222</port>
+    </server>
+    <database>
+        <type>sqlite</type>
+        <path>pyjabber.db</path>
+    </database>
+    <registration>
+        <enabled>true</enabled>
+    </registration>
+</config>
